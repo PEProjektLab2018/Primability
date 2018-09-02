@@ -1,0 +1,8 @@
+c:\users\zoli\documents\visual studio 2015\Projects\ProjektLab\ProjektLab\bin\Debug\ProjektLab.exe.config
+C:\Users\Zoli\Documents\Visual Studio 2015\Projects\ProjektLab\ProjektLab\bin\Debug\ProjektLab.exe
+C:\Users\Zoli\Documents\Visual Studio 2015\Projects\ProjektLab\ProjektLab\bin\Debug\ProjektLab.pdb
+C:\Users\Zoli\Documents\Visual Studio 2015\Projects\ProjektLab\ProjektLab\obj\Debug\ProjektLab.csprojResolveAssemblyReference.cache
+C:\Users\Zoli\Documents\Visual Studio 2015\Projects\ProjektLab\ProjektLab\obj\Debug\ProjektLab.Properties.Resources.resources
+C:\Users\Zoli\Documents\Visual Studio 2015\Projects\ProjektLab\ProjektLab\obj\Debug\ProjektLab.csproj.GenerateResource.Cache
+C:\Users\Zoli\Documents\Visual Studio 2015\Projects\ProjektLab\ProjektLab\obj\Debug\ProjektLab.exe
+C:\Users\Zoli\Documents\Visual Studio 2015\Projects\ProjektLab\ProjektLab\obj\Debug\ProjektLab.pdb
