@@ -7,6 +7,26 @@ using System.Threading.Tasks;
 
 namespace primary
 {
+
+    public class power {
+        private int mantissa;
+        private int exponent;
+
+        public power(int m, int e) {
+            this.mantissa = m;
+            this.exponent = e;
+        }
+
+        public int getMantissa() {
+            return this.mantissa;
+        }
+
+        public int getExponent() {
+            return this.exponent;
+        }
+
+    }
+
     public static class Primary
     {
 
@@ -164,43 +184,35 @@ namespace primary
 
                 }
 
-                public Boolean Fermat(int number) {
+                public Boolean Fermat(int number, int chance) {
                     int a;
-                    int succ=0;
+                    int i;
+
                     if (number % 2 == 0) { return false; }
-
-
-
-                    a = Primary.Number.generateRandom(number);
-                    while (Primary.Number.Euklides(number, a) != 1) {
+                    for (i = 0; i < chance; i++) {
                         a = Primary.Number.generateRandom(number);
+                        while (Primary.Number.Euklides(number, a) != 1)
+                        {
+                            a = Primary.Number.generateRandom(number);
+                        }
+                        if ((a ^ (number - 1) % number) == 1) { break; }
                     }
-                    if ((a ^ (number - 1) % number) == 1) {
-                        succ++;
-
-                    }
-                    /*
-                     
-                     Meg kívánjuk vizsgálni, hogy n szám 1-nél nagyobb páratlan egész prím-e. 
-                     Legyen 1<a<n. Euklideszi algoritmussal ellenőrizhető, hogy n és a relatív prímek. 
-                     Ha nem azok, akkor n bukja a tesztet, összetett.
-
-Ha n prím, akkor an-1 kongruens 1 mod n. Ha nem így van, akkor n bukja a tesztet, összetett. 
-Ha igen, akkor újabb véletlen a-val folytatódik a vizsgálat, egészen addig, amíg eléggé biztossá nem válik, hogy n valószínűleg prím. A legtöbb összetett szám ugyanis legfeljebb 1/2 valószínűséggel állja a tesztet egy véletlen a-ra.
-                     
-                     */
-
-
+                    if (i == chance) { return true; } else { return false; }
                 }
 
                 //Solovay–Strassen
-                public Boolean SolovayStrassen(int number) {
+                public Boolean SolovayStrassen(int number, int chance) {
                     int a;
                     int lnko;
-                    a = Primary.Number.generateRandom(number);
-                    lnko = Primary.Number.Euklides(number, a);
-                    if (lnko > 1) { return false; }
-                    if (Jacobi(a, number) == 0 || Math.Pow(a, (number - 1) / 2) % number != Jacobi(a, number)) {return false; }  else { return true; }
+                    int i;
+                    for (i=0; i < chance; i++) { 
+                        a = Primary.Number.generateRandom(number);
+                        lnko = Primary.Number.Euklides(number, a);
+                        if (lnko > 1) { break; }
+                        if (Jacobi(a, number) == 0 || Math.Pow(a, (number - 1) / 2) % number != Jacobi(a, number)) {break; } 
+                    }
+                    if (i == chance) { return true; } else { return false; }
+                        
                 }
                 /*
                  
@@ -334,7 +346,7 @@ LOOP1: repeat k times:
                     //loop 1
                     if ((a ^ (number - 1) % number) == 1) {
                         //loop2
-                        // (n-1)-et prímtényezőkre bontjuk és annak viszgáljuk a kongruenciáját
+                        // (n-1)-et prímtényezőkre bontjuk és annak vizsgáljuk a kongruenciáját
                         if ((a ^ ((number - 1)/q) % number) == 1)
                         {
 
@@ -443,7 +455,7 @@ Megjegyezzük, hogy elég csupán azokkal a {\displaystyle p_{i}\,} {\displaysty
 
         }
         public class Polinom {
-
+                //polinom: soktagú összeg, pl. ax2+bx+c
         }
 
     }
