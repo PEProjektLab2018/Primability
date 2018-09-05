@@ -8,21 +8,33 @@ using System.Threading.Tasks;
 namespace primary
 {
 
-    public class power {
-        private int mantissa;
-        private int exponent;
+    public class power
+    {
+        private int _mantissa;
+        private int _exponent;
 
-        public power(int m, int e) {
-            this.mantissa = m;
-            this.exponent = e;
+        public power(int mantissa, int exponent)
+        {
+            this._mantissa = mantissa;
+            this._exponent = exponent;
         }
 
-        public int getMantissa() {
-            return this.mantissa;
+        public int getMantissa()
+        {
+            return this._mantissa;
         }
 
-        public int getExponent() {
-            return this.exponent;
+        public int getExponent()
+        {
+            return this._exponent;
+        }
+
+        public void setMantissa(int mantissa) {
+            this._mantissa = mantissa;
+        }
+
+        public void setExponent (int exponent) {
+            this._exponent = exponent;
         }
 
     }
@@ -30,45 +42,98 @@ namespace primary
     public static class Primary
     {
 
-        public class Number {
+        public class Number
+        {
             private int PrimaryNumber;
 
             private Number() { }
-            private Number(int theNumber) {
+            private Number(int theNumber)
+            {
                 this.PrimaryNumber = theNumber;
             }
 
-            public int getNumber() {
+            public int getNumber()
+            {
                 return this.PrimaryNumber;
 
             }
 
-            private void setNumber(int theNumber) {
+            private void setNumber(int theNumber)
+            {
                 this.PrimaryNumber = theNumber;
             }
 
-            private static int generateRandom(int max) {
+            private static int generateRandom(int max)
+            {
                 int RandomNumber;
                 Random r = new Random(max);
 
-                RandomNumber = r.Next(3,max);
+                RandomNumber = r.Next(3, max);
 
                 return RandomNumber;
             }
 
-            public static int Factorial(int number) {
-                if (number == 1) {
+            public static int Factorial(int number)
+            {
+                if (number == 1)
+                {
                     return 1;
-                     }
-                else {
+                }
+                else
+                {
                     return number * Factorial(number - 1);
                 }
             }
 
-            public static int Euklides(int number1, int number2) {
+            public static List<power> primeFactors(int n)
+            {
+             //Return a list with prime factors
+                List < power > Po= new List<power>();
+                while (n % 2 == 0)
+                {
+                    if (Po.Count == 0) {
+                        Po.Add(new power(2, 1));
+                    }
+                    else { 
+                    power P = (from x in Po where (x.getMantissa() == 2) select x).First();
+                        P.setExponent(P.getExponent() + 1);
+                    }
+                }
+
+                for (int i = 3; i <= Math.Sqrt(n); i += 2)
+                {
+                    while (n % i == 0)
+                    {
+                        power P = (from x in Po where (x.getMantissa() == i) select x).First();
+                        if (P == null)
+                        {
+                            Po.Add(new power(i, 1));
+                        }
+                        else {
+                            power POdd = (from x in Po where (x.getMantissa() == i) select x).First();
+                            POdd.setExponent(POdd.getExponent() + 1);
+                        }
+                        n /= i;
+                    }
+
+                }
+
+                // This condition is to handle the case whien
+                // n is a prime number greater than 2
+                if (n > 2) { 
+                    Po.Add(new power(n, 1));
+                }
+                return Po;
+            }
+
+
+
+            public static int Euklides(int number1, int number2)
+            {
                 int lnko;
 
-                if (number1 > number2) {
+                if (number1 > number2)
+                {
                     if (number1 % number2 == 0)
                     {
                         return number2;
@@ -79,7 +144,8 @@ namespace primary
 
                     }
                 }
-                else {
+                else
+                {
                     if (number2 % number1 == 0)
                     {
                         return number1;
@@ -94,26 +160,32 @@ namespace primary
                 return lnko;
             }
 
-            public class Test { 
+            public class Test
+            {
 
                 //Primtesztelo algoritmusok
-            public Boolean Erastothenes(int number) {
-                Boolean valid=false;
-                if ((number > -3 && number < 3 ) || (number % 2 == 0 )) {
-                    //0,1,2 nem prímszám 
+                public Boolean Erastothenes(int number)
+                {
+                    Boolean valid = false;
+                    if ((number > -3 && number < 3) || (number % 2 == 0))
+                    {
+                        //0,1,2 nem prímszám 
                         return false;
-                }
+                    }
 
                     valid = Erastothenes(number, number + 1);
                     return valid;
-            }
+                }
 
 
-                public int Jacobi(int a, int n) {
+                public int Jacobi(int a, int n)
+                {
                     int temp;
-                    int j=1;
-                    while (a != 0) {
-                        while (a % 2 == 0) {
+                    int j = 1;
+                    while (a != 0)
+                    {
+                        while (a % 2 == 0)
+                        {
                             a = a / 2;
                             if (n % 8 == 3 || n % 8 == 5) { j = -j; }
                         }
@@ -131,65 +203,69 @@ namespace primary
 
 
 
-                public Boolean Erastothenes(int number, int maximum) {
-                Boolean valid = false;
-
-
-                bool[] nums = new bool[maximum];
-
-                nums[0] = false;
-
-                for (int i = 1; i < nums.Length; i++)
+                public Boolean Erastothenes(int number, int maximum)
                 {
-                    nums[i] = true;
-                }
+                    Boolean valid = false;
 
-                int p = 2;
 
-                while (Math.Pow(p, 2) < maximum)
-                {
-                    if (nums[p])
+                    bool[] nums = new bool[maximum];
+
+                    nums[0] = false;
+
+                    for (int i = 1; i < nums.Length; i++)
                     {
-                        int j = (int)Math.Pow(p, 2);
+                        nums[i] = true;
+                    }
 
-                        while (j < maximum)
+                    int p = 2;
+
+                    while (Math.Pow(p, 2) < maximum)
+                    {
+                        if (nums[p])
                         {
-                            nums[j] = false;
-                            j = j + p;
+                            int j = (int)Math.Pow(p, 2);
+
+                            while (j < maximum)
+                            {
+                                nums[j] = false;
+                                j = j + p;
+                            }
+                        }
+
+                        p++;
+                    }
+
+                    for (int i = 0; i < nums.Length; i++)
+                    {
+                        if ((i + 1) == number)
+                        {
+                            valid = nums[i];
                         }
                     }
 
-                    p++;
+
+                    return valid;
                 }
 
-                for (int i = 0; i < nums.Length; i++)
+                public Boolean Wilson(int number)
                 {
-                    if ((i+1)==number)
-                    {
-                        valid = nums[i];
-                    }
-                }
-
-
-                return valid;
-            }
-
-                public Boolean Wilson(int number) {
                     /*
                      Ennek a prímtesztnek, legalábbis ma, csak elméleti jelentősége van (tehát gyakorlatilag semmi); a Wilson-tételen alapul:
 
                     Az n>1 szám csak akkor prím, ha n|(n-1)!+1. */
-   
-                    if ((number>1) && (number % (Primary.Number.Factorial(number - 1) + 1) == 0))   { return true; } else { return false; }
+
+                    if ((number > 1) && (number % (Primary.Number.Factorial(number - 1) + 1) == 0)) { return true; } else { return false; }
 
                 }
 
-                public Boolean Fermat(int number, int chance) {
+                public Boolean Fermat(int number, int chance)
+                {
                     int a;
                     int i;
 
                     if (number % 2 == 0) { return false; }
-                    for (i = 0; i < chance; i++) {
+                    for (i = 0; i < chance; i++)
+                    {
                         a = Primary.Number.generateRandom(number);
                         while (Primary.Number.Euklides(number, a) != 1)
                         {
@@ -201,18 +277,20 @@ namespace primary
                 }
 
                 //Solovay–Strassen
-                public Boolean SolovayStrassen(int number, int chance) {
+                public Boolean SolovayStrassen(int number, int chance)
+                {
                     int a;
                     int lnko;
                     int i;
-                    for (i=0; i < chance; i++) { 
+                    for (i = 0; i < chance; i++)
+                    {
                         a = Primary.Number.generateRandom(number);
                         lnko = Primary.Number.Euklides(number, a);
                         if (lnko > 1) { break; }
-                        if (Jacobi(a, number) == 0 || Math.Pow(a, (number - 1) / 2) % number != Jacobi(a, number)) {break; } 
+                        if (Jacobi(a, number) == 0 || Math.Pow(a, (number - 1) / 2) % number != Jacobi(a, number)) { break; }
                     }
                     if (i == chance) { return true; } else { return false; }
-                        
+
                 }
                 /*
                  
@@ -338,126 +416,134 @@ LOOP1: repeat k times:
 
                  */
 
-                public static Boolean Lucas(int number) {
+                public static Boolean Lucas(int number)
+                {
                     bool valid;
                     int a;
                     int q;
+                    List<power> P = new List<power>();
                     a = generateRandom(number - 1);
                     //loop 1
-                    if ((a ^ (number - 1) % number) == 1) {
+                    if ((a ^ (number - 1) % number) == 1)
+                    {
                         //loop2
                         // (n-1)-et prímtényezőkre bontjuk és annak vizsgáljuk a kongruenciáját
-                        if ((a ^ ((number - 1)/q) % number) == 1)
+                        P = primeFactors(number - 1);
+                        foreach(power Po in P) {
+                        if ((a ^ ((number - 1) / Po.getMantissa()) % number) == 1)
+
                         {
 
                         }
 
-                    else valid = false;
+                        else valid = false;
+
+                    }
+
+
+
+                    //AKS
+                    /*
+
+                    2002 augusztusában három indiai matematikus – Manindra Agrawal, Neeraj Kayal és Nitin Saxena – polinomiális prímtesztet talált ki. 
+                    Ez a prímek következő karakterizációján alapul: Legyen {\displaystyle n\geq 2} {\displaystyle n\geq 2} természetes szám, r olyan n-nél kisebb természetes szám, 
+                    hogy n rendje r-rel osztva nagyobb, mint ( {\displaystyle log_{10}} {\displaystyle log_{10}} n)2. n pontosan akkor prím, ha:
+
+    1. n nem teljes hatvány,
+    2. n-nek nincs prímtényezője, ami {\displaystyle \leq r} {\displaystyle \leq r},
+    3. {\displaystyle (x+a)^{n}\equiv x^{n}+a{\pmod {(n,x^{r}-1)}}} {\displaystyle (x+a)^{n}\equiv x^{n}+a{\pmod {(n,x^{r}-1)}}}teljesül minden {\displaystyle 1\leq a\leq {\sqrt {r}}\log n} {\displaystyle 1\leq a\leq {\sqrt {r}}\log n}egész számra. 
+
+                     */
+
+
+
+                    //Euklidesz algoritmus
+                    /*
+                     Az euklideszi algoritmus egymást követő lépései az előző lépés eredményéből indulnak ki. 
+                     A lépéseket a k index számolja nullától kezdődően. Így a kezdőlépés a k = 0, a következő lépés a k = 1 indexet használja, és így tovább.
+
+    Minden lépés az rk−1 és rk−2 maradékokat használja. Mivel a maradékok folyamatosan csökkennek, azért rk−1 kisebb, mint rk−2. A cél az, hogy találjunk egy qk hányadost és egy rk maradékot, 
+    amellyel az
+
+    r_{k-2}=q_{k}r_{k-1}+r_{k}
+
+    egyenlőség teljesül. Szavakkal, a nagyobb rk−2 számból a kisebb rk−1 többszöröseit vonja le, amíg egy még kisebb rk számhoz nem jut.
+
+    A (k = 0) kezdőlépésben az r−2 és r−1 számok megfeleltethetők a kiindulási számoknak. 
+    A következő lépésben (k = 1) a kisebb kezdőszám és a nulladik lépésben kapott r0 maradékot használja, és így tovább. Így az algoritmus írható mint az
+
+    a&=q_{0}b+r_{0}\\
+    b&=q_{1}r_{0}+r_{1}\\
+    r_{0}&=q_{2}r_{1}+r_{2}\\
+    r_{1}&=q_{3}r_{2}+r_{3}
+
+    egyenlőségek sorozata.
+
+    Ha a kisebb szám az a, akkor az első lépésben az algoritmus felcseréli a számokat. 
+    Például, ha a < b, akkor az első q0 hányados nulla lesz, és a maradék r0 = a. 
+    Ettől kezdve az rk maradék mindig kisebb lesz, mint az előző rk−1 maradék minden k ≥ 0 indexre. 
+    Mivel a maradékok minden lépésben csökkennek, és sosem lehetnek negatívok, így előbb-utóbb lesz egy maradék, rN = 0[14] 
+    Az utolsó nem nulla maradék lesz a legnagyobb közös osztó. Az N nem lehet végtelen, mert csak véges sok egész van a nulla és az első r0 maradék között.
+                     */
+
+
+                    //Carmichael-teszt
+
+
+                    //faktorizáció
+
+                    /*
+
+                    Egy egyszerű faktorizáló eljárás
+    Leírás
+    Az alábbiakban leírunk egy rekurzív eljárást számok prímtényezős felbontására: Adott egy n szám
+
+    ha n prím, készen vagyunk, megvan a prímtényezős felbontás.
+    ha n összetett, osszuk el n-t az első {\displaystyle p_{1}\,} {\displaystyle p_{1}\,} prímmel.
+    Ha az osztás maradék nélküli, kezdjük újra az algoritmust az {\displaystyle {\frac {n}{p_{1}}}} {\displaystyle {\frac {n}{p_{1}}}} értékkel, s adjuk hozzá {\displaystyle p_{1}\,} {\displaystyle p_{1}\,}-et az n prímtényezős listájához.
+    Ha az osztás maradékos volt, akkor osszuk n-t a következő {\displaystyle p_{2}\,} {\displaystyle p_{2}\,} prímmel, és így tovább, amíg az aktuális {\displaystyle {\frac {n}{p_{i}}}} {\displaystyle {\frac {n}{p_{i}}}} érték 1 nem lesz, maradék nélkül. Ekkor megállunk.
+    Megjegyezzük, hogy elég csupán azokkal a {\displaystyle p_{i}\,} {\displaystyle p_{i}\,} prímmekkel osztani n-t melyekre igaz, hogy {\displaystyle p_{i}\leq {\sqrt {n}}} {\displaystyle p_{i}\leq {\sqrt {n}}}. 
+
+
+                     C programkod
+
+                    int main(void) {
+        int t[100];
+        unsigned long long j, i, k, d; //ha csak a pozitív számokat vesszük
+        while (1==scanf("%llu", &k)) {
+            if (k<0) k*=(-1);
+            i=0;
+            d=2;
+            while (k>1) {
+                if (k%d==0) {
+                    k/=d; 
+                    t[i]=d;
+                    i++;
+                } else {
+                    ++d;
+                }
+            }
+            for (j=0;j<i;j++) {
+                printf("%d ", t[j]);
+            }
+            printf("\n\n");
+        }
+        return 0;
+    }
+
+
+                     */
+
 
                 }
 
-
-
-                //AKS
-                /*
-
-                2002 augusztusában három indiai matematikus – Manindra Agrawal, Neeraj Kayal és Nitin Saxena – polinomiális prímtesztet talált ki. 
-                Ez a prímek következő karakterizációján alapul: Legyen {\displaystyle n\geq 2} {\displaystyle n\geq 2} természetes szám, r olyan n-nél kisebb természetes szám, 
-                hogy n rendje r-rel osztva nagyobb, mint ( {\displaystyle log_{10}} {\displaystyle log_{10}} n)2. n pontosan akkor prím, ha:
-
-1. n nem teljes hatvány,
-2. n-nek nincs prímtényezője, ami {\displaystyle \leq r} {\displaystyle \leq r},
-3. {\displaystyle (x+a)^{n}\equiv x^{n}+a{\pmod {(n,x^{r}-1)}}} {\displaystyle (x+a)^{n}\equiv x^{n}+a{\pmod {(n,x^{r}-1)}}}teljesül minden {\displaystyle 1\leq a\leq {\sqrt {r}}\log n} {\displaystyle 1\leq a\leq {\sqrt {r}}\log n}egész számra. 
-
-                 */
-
-
-
-                //Euklidesz algoritmus
-                /*
-                 Az euklideszi algoritmus egymást követő lépései az előző lépés eredményéből indulnak ki. 
-                 A lépéseket a k index számolja nullától kezdődően. Így a kezdőlépés a k = 0, a következő lépés a k = 1 indexet használja, és így tovább.
-
-Minden lépés az rk−1 és rk−2 maradékokat használja. Mivel a maradékok folyamatosan csökkennek, azért rk−1 kisebb, mint rk−2. A cél az, hogy találjunk egy qk hányadost és egy rk maradékot, 
-amellyel az
-
-r_{k-2}=q_{k}r_{k-1}+r_{k}
-
-egyenlőség teljesül. Szavakkal, a nagyobb rk−2 számból a kisebb rk−1 többszöröseit vonja le, amíg egy még kisebb rk számhoz nem jut.
-
-A (k = 0) kezdőlépésben az r−2 és r−1 számok megfeleltethetők a kiindulási számoknak. 
-A következő lépésben (k = 1) a kisebb kezdőszám és a nulladik lépésben kapott r0 maradékot használja, és így tovább. Így az algoritmus írható mint az
-
-a&=q_{0}b+r_{0}\\
-b&=q_{1}r_{0}+r_{1}\\
-r_{0}&=q_{2}r_{1}+r_{2}\\
-r_{1}&=q_{3}r_{2}+r_{3}
-
-egyenlőségek sorozata.
-
-Ha a kisebb szám az a, akkor az első lépésben az algoritmus felcseréli a számokat. 
-Például, ha a < b, akkor az első q0 hányados nulla lesz, és a maradék r0 = a. 
-Ettől kezdve az rk maradék mindig kisebb lesz, mint az előző rk−1 maradék minden k ≥ 0 indexre. 
-Mivel a maradékok minden lépésben csökkennek, és sosem lehetnek negatívok, így előbb-utóbb lesz egy maradék, rN = 0[14] 
-Az utolsó nem nulla maradék lesz a legnagyobb közös osztó. Az N nem lehet végtelen, mert csak véges sok egész van a nulla és az első r0 maradék között.
-                 */
-
-
-                //Carmichael-teszt
-
-
-                //faktorizáció
-
-                /*
-
-                Egy egyszerű faktorizáló eljárás
-Leírás
-Az alábbiakban leírunk egy rekurzív eljárást számok prímtényezős felbontására: Adott egy n szám
-
-ha n prím, készen vagyunk, megvan a prímtényezős felbontás.
-ha n összetett, osszuk el n-t az első {\displaystyle p_{1}\,} {\displaystyle p_{1}\,} prímmel.
-Ha az osztás maradék nélküli, kezdjük újra az algoritmust az {\displaystyle {\frac {n}{p_{1}}}} {\displaystyle {\frac {n}{p_{1}}}} értékkel, s adjuk hozzá {\displaystyle p_{1}\,} {\displaystyle p_{1}\,}-et az n prímtényezős listájához.
-Ha az osztás maradékos volt, akkor osszuk n-t a következő {\displaystyle p_{2}\,} {\displaystyle p_{2}\,} prímmel, és így tovább, amíg az aktuális {\displaystyle {\frac {n}{p_{i}}}} {\displaystyle {\frac {n}{p_{i}}}} érték 1 nem lesz, maradék nélkül. Ekkor megállunk.
-Megjegyezzük, hogy elég csupán azokkal a {\displaystyle p_{i}\,} {\displaystyle p_{i}\,} prímmekkel osztani n-t melyekre igaz, hogy {\displaystyle p_{i}\leq {\sqrt {n}}} {\displaystyle p_{i}\leq {\sqrt {n}}}. 
-
-
-                 C programkod
-
-                int main(void) {
-    int t[100];
-    unsigned long long j, i, k, d; //ha csak a pozitív számokat vesszük
-    while (1==scanf("%llu", &k)) {
-        if (k<0) k*=(-1);
-        i=0;
-        d=2;
-        while (k>1) {
-            if (k%d==0) {
-                k/=d; 
-                t[i]=d;
-                i++;
-            } else {
-                ++d;
             }
-        }
-        for (j=0;j<i;j++) {
-            printf("%d ", t[j]);
-        }
-        printf("\n\n");
-    }
-    return 0;
-}
-
-
-                 */
-
-
-            }
-
-        }
-        public class Polinom {
+            public class Polinom
+            {
                 //polinom: soktagú összeg, pl. ax2+bx+c
+            }
+
         }
 
     }
-
 }
