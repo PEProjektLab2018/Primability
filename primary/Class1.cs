@@ -201,7 +201,32 @@ namespace primary
 
                 //Erasztothenész szitája, felső keresési korláttal
 
+                public Boolean PerfectPower(int number) {
+                    //AKS teszt első lépés: teljes hatvány teszt 
+                    int a, b;
+                    for (b = 2; b <= Math.Log(number, 2); b++) {
+                        a = number ^ (1 / b);
+                        if (a % 1 == 0) { return true; }
+                    }
+                    return false;
+                }
 
+                public int smallestR(int number) {
+                    int maxk, maxr,r,k;
+                    bool nextR;
+                    //maxk = Math.Floor((Math.Log(number, 2)) ^ 2);
+
+                    maxk = (int)Math.Floor(Math.Pow((Math.Log(number, 2)), 2));
+                    maxr = Math.Max(3, (int)Math.Ceiling(Math.Pow(Math.Log(number, 2), 5)));
+                    nextR = true;
+                    for (r = 2; nextR && r < maxr; r++) {
+                        nextR = false;
+                        for (k = 1; (!nextR) && k <= maxk; k++) {
+                            nextR = ((number ^ k % r) == 1) || ((number ^ k % r) == 0);
+                        }
+                    }
+                    return r--;
+                }
 
                 public Boolean Erastothenes(int number, int maximum)
                 {
@@ -339,6 +364,24 @@ namespace primary
                     return true;
                 }
 
+                public Boolean AKS(int number) {
+                    int R;
+                    if (PerfectPower(number))
+                    {
+                        return false;
+                    }
+                    R = smallestR(number);
+                    for (int a = R; a > 1; a--) {
+                        if (Euklides(a, number) > 1 && Euklides(a, number) < number) {
+                            return false;
+                        }
+                    }
+                    if (number <= R) { return true; }
+
+
+
+                }
+
                 /*
                 Legyen n a tesztelendő páratlan szám, {\displaystyle n-1=2^{s
             }
@@ -416,128 +459,107 @@ LOOP1: repeat k times:
 
                  */
 
-                public static Boolean Lucas(int number)
+                public static Boolean Lucas(int number, int chance)
                 {
-                    bool valid;
+                    bool valid=false;
                     int a;
-                    int q;
                     List<power> P = new List<power>();
-                    a = generateRandom(number - 1);
-                    //loop 1
-                    if ((a ^ (number - 1) % number) == 1)
+                    for (int i = 0; i < chance; i++)
                     {
-                        //loop2
-                        // (n-1)-et prímtényezőkre bontjuk és annak vizsgáljuk a kongruenciáját
-                        P = primeFactors(number - 1);
-                        foreach(power Po in P) {
-                        if ((a ^ ((number - 1) / Po.getMantissa()) % number) == 1)
 
+                        a = generateRandom(number - 1);
+                        //loop 1
+                        if ((a ^ (number - 1) % number) == 1)
                         {
+                            //loop2
+                            // (n-1)-et prímtényezőkre bontjuk és annak vizsgáljuk a kongruenciáját
+                            P = primeFactors(number - 1);
+                            foreach (power Po in P)
+                            {
+                                if ((a ^ ((number - 1) / Po.getMantissa()) % number) != 1)
 
+                                {
+                                    valid = true;
+                                }
+
+                                else
+                                {
+                                    valid = false;
+                                    break;
+                                }
+                            }
+                            if (valid == true) { return valid; }
                         }
-
-                        else valid = false;
-
                     }
-
-
-
-                    //AKS
-                    /*
-
-                    2002 augusztusában három indiai matematikus – Manindra Agrawal, Neeraj Kayal és Nitin Saxena – polinomiális prímtesztet talált ki. 
-                    Ez a prímek következő karakterizációján alapul: Legyen {\displaystyle n\geq 2} {\displaystyle n\geq 2} természetes szám, r olyan n-nél kisebb természetes szám, 
-                    hogy n rendje r-rel osztva nagyobb, mint ( {\displaystyle log_{10}} {\displaystyle log_{10}} n)2. n pontosan akkor prím, ha:
-
-    1. n nem teljes hatvány,
-    2. n-nek nincs prímtényezője, ami {\displaystyle \leq r} {\displaystyle \leq r},
-    3. {\displaystyle (x+a)^{n}\equiv x^{n}+a{\pmod {(n,x^{r}-1)}}} {\displaystyle (x+a)^{n}\equiv x^{n}+a{\pmod {(n,x^{r}-1)}}}teljesül minden {\displaystyle 1\leq a\leq {\sqrt {r}}\log n} {\displaystyle 1\leq a\leq {\sqrt {r}}\log n}egész számra. 
-
-                     */
-
-
-
-                    //Euklidesz algoritmus
-                    /*
-                     Az euklideszi algoritmus egymást követő lépései az előző lépés eredményéből indulnak ki. 
-                     A lépéseket a k index számolja nullától kezdődően. Így a kezdőlépés a k = 0, a következő lépés a k = 1 indexet használja, és így tovább.
-
-    Minden lépés az rk−1 és rk−2 maradékokat használja. Mivel a maradékok folyamatosan csökkennek, azért rk−1 kisebb, mint rk−2. A cél az, hogy találjunk egy qk hányadost és egy rk maradékot, 
-    amellyel az
-
-    r_{k-2}=q_{k}r_{k-1}+r_{k}
-
-    egyenlőség teljesül. Szavakkal, a nagyobb rk−2 számból a kisebb rk−1 többszöröseit vonja le, amíg egy még kisebb rk számhoz nem jut.
-
-    A (k = 0) kezdőlépésben az r−2 és r−1 számok megfeleltethetők a kiindulási számoknak. 
-    A következő lépésben (k = 1) a kisebb kezdőszám és a nulladik lépésben kapott r0 maradékot használja, és így tovább. Így az algoritmus írható mint az
-
-    a&=q_{0}b+r_{0}\\
-    b&=q_{1}r_{0}+r_{1}\\
-    r_{0}&=q_{2}r_{1}+r_{2}\\
-    r_{1}&=q_{3}r_{2}+r_{3}
-
-    egyenlőségek sorozata.
-
-    Ha a kisebb szám az a, akkor az első lépésben az algoritmus felcseréli a számokat. 
-    Például, ha a < b, akkor az első q0 hányados nulla lesz, és a maradék r0 = a. 
-    Ettől kezdve az rk maradék mindig kisebb lesz, mint az előző rk−1 maradék minden k ≥ 0 indexre. 
-    Mivel a maradékok minden lépésben csökkennek, és sosem lehetnek negatívok, így előbb-utóbb lesz egy maradék, rN = 0[14] 
-    Az utolsó nem nulla maradék lesz a legnagyobb közös osztó. Az N nem lehet végtelen, mert csak véges sok egész van a nulla és az első r0 maradék között.
-                     */
-
-
-                    //Carmichael-teszt
-
-
-                    //faktorizáció
-
-                    /*
-
-                    Egy egyszerű faktorizáló eljárás
-    Leírás
-    Az alábbiakban leírunk egy rekurzív eljárást számok prímtényezős felbontására: Adott egy n szám
-
-    ha n prím, készen vagyunk, megvan a prímtényezős felbontás.
-    ha n összetett, osszuk el n-t az első {\displaystyle p_{1}\,} {\displaystyle p_{1}\,} prímmel.
-    Ha az osztás maradék nélküli, kezdjük újra az algoritmust az {\displaystyle {\frac {n}{p_{1}}}} {\displaystyle {\frac {n}{p_{1}}}} értékkel, s adjuk hozzá {\displaystyle p_{1}\,} {\displaystyle p_{1}\,}-et az n prímtényezős listájához.
-    Ha az osztás maradékos volt, akkor osszuk n-t a következő {\displaystyle p_{2}\,} {\displaystyle p_{2}\,} prímmel, és így tovább, amíg az aktuális {\displaystyle {\frac {n}{p_{i}}}} {\displaystyle {\frac {n}{p_{i}}}} érték 1 nem lesz, maradék nélkül. Ekkor megállunk.
-    Megjegyezzük, hogy elég csupán azokkal a {\displaystyle p_{i}\,} {\displaystyle p_{i}\,} prímmekkel osztani n-t melyekre igaz, hogy {\displaystyle p_{i}\leq {\sqrt {n}}} {\displaystyle p_{i}\leq {\sqrt {n}}}. 
-
-
-                     C programkod
-
-                    int main(void) {
-        int t[100];
-        unsigned long long j, i, k, d; //ha csak a pozitív számokat vesszük
-        while (1==scanf("%llu", &k)) {
-            if (k<0) k*=(-1);
-            i=0;
-            d=2;
-            while (k>1) {
-                if (k%d==0) {
-                    k/=d; 
-                    t[i]=d;
-                    i++;
-                } else {
-                    ++d;
+                    return valid;
                 }
             }
-            for (j=0;j<i;j++) {
-                printf("%d ", t[j]);
-            }
-            printf("\n\n");
+
+
+          
+            //AKS
+            /*
+
+            2002 augusztusában három indiai matematikus – Manindra Agrawal, Neeraj Kayal és Nitin Saxena – polinomiális prímtesztet talált ki. 
+            Ez a prímek következő karakterizációján alapul: Legyen {\displaystyle n\geq 2} {\displaystyle n\geq 2} természetes szám, r olyan n-nél kisebb természetes szám, 
+            hogy n rendje r-rel osztva nagyobb, mint ( {\displaystyle log_{10}} {\displaystyle log_{10}} n)2. n pontosan akkor prím, ha:
+
+1. n nem teljes hatvány,
+2. n-nek nincs prímtényezője, ami {\displaystyle \leq r} {\displaystyle \leq r},
+3. {\displaystyle (x+a)^{n}\equiv x^{n}+a{\pmod {(n,x^{r}-1)}}} {\displaystyle (x+a)^{n}\equiv x^{n}+a{\pmod {(n,x^{r}-1)}}}teljesül minden {\displaystyle 1\leq a\leq {\sqrt {r}}\log n} {\displaystyle 1\leq a\leq {\sqrt {r}}\log n}egész számra. 
+
+             */
+            
+
+            //Carmichael-teszt
+
+
+            //faktorizáció
+
+            /*
+
+            Egy egyszerű faktorizáló eljárás
+Leírás
+Az alábbiakban leírunk egy rekurzív eljárást számok prímtényezős felbontására: Adott egy n szám
+
+ha n prím, készen vagyunk, megvan a prímtényezős felbontás.
+ha n összetett, osszuk el n-t az első {\displaystyle p_{1}\,} {\displaystyle p_{1}\,} prímmel.
+Ha az osztás maradék nélküli, kezdjük újra az algoritmust az {\displaystyle {\frac {n}{p_{1}}}} {\displaystyle {\frac {n}{p_{1}}}} értékkel, s adjuk hozzá {\displaystyle p_{1}\,} {\displaystyle p_{1}\,}-et az n prímtényezős listájához.
+Ha az osztás maradékos volt, akkor osszuk n-t a következő {\displaystyle p_{2}\,} {\displaystyle p_{2}\,} prímmel, és így tovább, amíg az aktuális {\displaystyle {\frac {n}{p_{i}}}} {\displaystyle {\frac {n}{p_{i}}}} érték 1 nem lesz, maradék nélkül. Ekkor megállunk.
+Megjegyezzük, hogy elég csupán azokkal a {\displaystyle p_{i}\,} {\displaystyle p_{i}\,} prímmekkel osztani n-t melyekre igaz, hogy {\displaystyle p_{i}\leq {\sqrt {n}}} {\displaystyle p_{i}\leq {\sqrt {n}}}. 
+
+
+             C programkod
+
+            int main(void) {
+int t[100];
+unsigned long long j, i, k, d; //ha csak a pozitív számokat vesszük
+while (1==scanf("%llu", &k)) {
+    if (k<0) k*=(-1);
+    i=0;
+    d=2;
+    while (k>1) {
+        if (k%d==0) {
+            k/=d; 
+            t[i]=d;
+            i++;
+        } else {
+            ++d;
         }
-        return 0;
     }
+    for (j=0;j<i;j++) {
+        printf("%d ", t[j]);
+    }
+    printf("\n\n");
+}
+return 0;
+}
 
 
-                     */
+             */
 
 
-                }
 
-            }
             public class Polinom
             {
                 //polinom: soktagú összeg, pl. ax2+bx+c
